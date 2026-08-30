@@ -199,6 +199,68 @@
     padding: 4px 8px; cursor: pointer;
   }
   .theme-toggle:hover { color: var(--ink); border-color: var(--border-strong); }
+
+  .herolinks { margin: 18px 0 0; font-size: 15px; }
+  .herolinks a {
+    color: var(--accent); text-decoration: none; font-weight: 600;
+    border-bottom: 1px solid transparent;
+  }
+  .herolinks a:hover { border-bottom-color: var(--accent); }
+
+  .live { padding: 46px 0 8px; }
+  .live-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 18px; margin-bottom: 18px;
+  }
+  .live-title {
+    font-family: var(--serif); font-weight: 600; letter-spacing: -.01em;
+    font-size: clamp(22px, 3.6vw, 31px); line-height: 1.12; margin: 0 0 8px;
+    text-wrap: balance;
+  }
+  .live-sub { margin: 0; color: var(--ink-soft); font-size: 15px; max-width: 54ch; text-wrap: pretty; }
+  .play {
+    flex: none; font-family: var(--sans); font-weight: 600; font-size: 14px;
+    color: #fff; background: var(--accent); border: none; border-radius: 10px;
+    padding: 11px 18px; cursor: pointer; white-space: nowrap; transition: filter .15s ease;
+  }
+  .play:hover { filter: brightness(1.08); }
+  .play:disabled { opacity: .55; cursor: default; filter: none; }
+  .play:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .transcript {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 10px 0; min-height: 92px; overflow: hidden;
+  }
+  .transcript .empty {
+    padding: 26px 20px; color: var(--muted); font-size: 14px; font-family: var(--mono);
+  }
+  .turn { padding: 9px 20px; display: flex; gap: 12px; align-items: baseline; }
+  .turn .who {
+    flex: none; width: 50px; font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+  }
+  .turn.buyer .who { color: var(--accent); }
+  .turn .said { font-size: 15.5px; color: var(--ink); }
+  .turn.rep .said { color: var(--ink-soft); }
+  .whisper { padding: 2px 20px 10px 82px; }
+  .whisper .tag {
+    display: flex; align-items: center; gap: 8px; margin: 0 0 8px;
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--muted);
+  }
+  .whisper .tag::before { content: ""; width: 16px; height: 1px; background: var(--border-strong); }
+  .whisper .savenote {
+    margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft);
+    background: var(--accent-soft); border-radius: 9px; padding: 10px 13px;
+  }
+  .whisper .savenote b { color: var(--ink); font-weight: 600; }
+  .fade { animation: rise .28s cubic-bezier(.2,.7,.3,1); }
+  @media (prefers-reduced-motion: reduce) { .fade { animation: none; } }
+  @media (max-width: 620px) {
+    .whisper { padding-left: 20px; }
+    .turn .who { width: 44px; }
+    .live-head { flex-direction: column; }
+  }
 </style>
 
 <div class="wrap">
@@ -212,6 +274,7 @@
     <p class="lede">Every sales tool is built to say more. In a regulated room, the expensive
       failure is one confident wrong answer. So try to make this one lie. Ask it something it
       shouldn't know, or a feature that isn't shipped. Watch what it does instead.</p>
+    <p class="herolinks"><a href="https://github.com/dbhat93/grounded" target="_blank" rel="noopener">See the code on GitHub &rarr;</a></p>
   </section>
 
   <div class="console">
@@ -237,6 +300,21 @@
     </div>
   </div>
 
+  <section class="live">
+    <div class="live-head">
+      <div>
+        <h2 class="live-title">Now put it on a live call.</h2>
+        <p class="live-sub">The same engine, listening to the buyer in real time. It transcribes the
+          call with a local Whisper model, on the rep's own machine, and whispers a grounded card the
+          moment the buyer asks. No bot joins the meeting; no audio leaves the laptop. Press play.</p>
+      </div>
+      <button class="play" id="play" type="button">&#9654;&nbsp; Play the call</button>
+    </div>
+    <div class="transcript" id="transcript">
+      <div class="empty">a sample discovery call, grounded live &mdash; press play</div>
+    </div>
+  </section>
+
   <section class="why">
     <h2>Why this is the whole thing</h2>
     <p><b>Never wrong out loud.</b> It answers only from vetted, cited facts, labels what is live
@@ -249,11 +327,15 @@
       confidently lies.</p>
     <p><b>This is a working engine.</b> The grounding logic runs right here in your browser over
       sample data. No answer is generated. What you read is the vetted record, or nothing.</p>
+    <p><b>And it holds through a bad transcript.</b> On the live call, when the buyer names a core the
+      transcriber mishears, it resolves on the part it got right and answers correctly instead of
+      confusing a lookalike for a yes. A wrong transcript costs a miss, never a confident wrong answer.
+      That trade is the whole design.</p>
   </section>
 
   <footer>
-    <span class="note">Demo runs on <b>Kestrel</b>, a fictional fraud-detection vendor. All facts
-      are sample data. Originated by Dhiraj Bhat &nbsp;·&nbsp; <a href="#" id="contact">get in touch</a></span>
+    <span class="note">Demo runs on <b>Kestrel</b>, a fictional fraud-detection vendor. Every fact
+      is sample data. Originated by Dhiraj Bhat &nbsp;·&nbsp; <a href="https://github.com/dbhat93/grounded" target="_blank" rel="noopener">source on GitHub</a></span>
     <button class="theme-toggle" id="themeBtn">theme</button>
   </footer>
 </div>
@@ -295,6 +377,7 @@ const FACTS = [
   {id:"NEG-02", topic:"Fiserv Signature core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Signature core. Signature is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
   {id:"NEG-03", topic:"Jack Henry SilverLake core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys), not the SilverLake bank core. SilverLake is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
   {id:"NEG-04", topic:"Temenos Infinity integration", answer:"Kestrel's Temenos work targets T24 / Transact (roadmap). Temenos Infinity is not supported.", status:"no", src:"integrations", ver:"2026-07-18"},
+  {id:"NEG-05", topic:"Corelation Keystone core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys) and Fiserv DNA, not the Corelation Keystone core. Keystone is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
   {id:"COMP-01", topic:"SentinelIQ", answer:"SentinelIQ is strong on rules-based AML but has no sub-200ms real-time ML scoring; Kestrel's is GA. Both are SOC 2 Type II. SentinelIQ has no Jack Henry Symitar integration. Verify any competitor claim against their current materials before stating it.", status:"battle", src:"competitive", ver:"2026-07-20"},
   {id:"COMP-02", topic:"FraudFort", answer:"FraudFort covers device fingerprinting and case management, but routes scoring through a batch pipeline (minutes, not milliseconds); Kestrel scores in real time. Confirm FraudFort's current latency claims before quoting them.", status:"battle", src:"competitive", ver:"2026-07-20"},
 ];
@@ -378,11 +461,32 @@ function answer(query){
     }
     return false;
   });
-  if(!eligible.length || eligible[0].s<THRESHOLD)
+  // entity consistency: if the query names distinctive entities (strong tokens
+  // like "Keystone", "Premier", "T24"), the chosen answer must carry them. Stops
+  // a generic fact ("credit unions") from hijacking a question about a specific
+  // named product the buyer asked about. This is the entity-resolution guard
+  // that keeps a near-miss from becoming a confident wrong answer.
+  const qStrong = qtok.filter(function(t){ return STRONG.has(t); });
+  let pool = eligible;
+  if(qStrong.length){
+    const hasAll = eligible.filter(function(o){
+      return qStrong.every(function(t){ return o.d.set.has(t); });
+    });
+    if(hasAll.length){
+      pool = hasAll;
+    } else {
+      const counts = eligible.map(function(o){
+        return qStrong.filter(function(t){ return o.d.set.has(t); }).length;
+      });
+      const best = Math.max.apply(null, counts.concat(0));
+      if(best>0) pool = eligible.filter(function(o,i){ return counts[i]===best; });
+    }
+  }
+  if(!pool.length || pool[0].s<THRESHOLD)
     return {kind:"refuse", reason:"weak"};
-  for(const t of qtok){ if(/^\d+$/.test(t) && !eligible[0].d.set.has(t))
+  for(const t of qtok){ if(/^\d+$/.test(t) && !pool[0].d.set.has(t))
     return {kind:"refuse", reason:"number", pin:t}; }
-  return {kind:"answer", fact:eligible[0].d.f, score:eligible[0].s};
+  return {kind:"answer", fact:pool[0].d.f, score:pool[0].s};
 }
 
 const elResult=document.getElementById("result");
@@ -391,33 +495,34 @@ let asked=0, answered=0, refused=0;
 function daysSince(iso){ const d=new Date(iso+"T00:00:00"); return Math.floor((Date.now()-d)/86400000); }
 function esc(s){ return s.replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
 
+function cardHTML(f){
+  const cap=CAUTION[f.status];
+  const stale=daysSince(f.ver)>90 ? ' &middot; <span class="stale">stale, re-confirm ('+daysSince(f.ver)+'d)</span>' : "";
+  return '<div class="card animate" data-status="'+f.status+'">'
+    + '<span class="pill">'+LABEL[f.status]+'</span>'
+    + '<div class="topic">'+esc(f.topic)+'</div>'
+    + '<div class="answer">'+esc(f.answer)+'</div>'
+    + (cap?'<div class="caution">'+esc(cap)+'</div>':"")
+    + '<div class="cite"><span>source '+esc(f.src)+'/'+esc(f.id)+'</span><span>verified '+esc(f.ver)+stale+'</span></div>'
+    + '</div>';
+}
+function refuseHTML(r){
+  const why = r.reason==="number" ? 'It named "'+esc(r.pin)+'", which no vetted record covers.'
+    : r.reason==="empty" ? 'No question to ground.'
+    : 'Nothing on record matches closely enough to be sure.';
+  return '<div class="card refuse animate">'
+    + '<span class="pill">Refused</span>'
+    + '<div class="rtitle">Not in the knowledge base.</div>'
+    + '<div class="rbody">"I don\'t have that vetted. I\'ll follow up in writing." It will not guess to fill the silence.</div>'
+    + '<div class="rwhy">'+why+' &nbsp;&middot;&nbsp; in production this routes to a written follow-up</div>'
+    + '</div>';
+}
 function render(query){
   const r=answer(query);
   asked++;
   let html;
-  if(r.kind==="answer"){
-    answered++;
-    const f=r.fact, cap=CAUTION[f.status];
-    const stale=daysSince(f.ver)>90 ? ' &middot; <span class="stale">stale, re-confirm ('+daysSince(f.ver)+'d)</span>' : "";
-    html = '<div class="card animate" data-status="'+f.status+'">'
-      + '<span class="pill">'+LABEL[f.status]+'</span>'
-      + '<div class="topic">'+esc(f.topic)+'</div>'
-      + '<div class="answer">'+esc(f.answer)+'</div>'
-      + (cap?'<div class="caution">'+esc(cap)+'</div>':"")
-      + '<div class="cite"><span>source '+esc(f.src)+'/'+esc(f.id)+'</span><span>verified '+esc(f.ver)+stale+'</span></div>'
-      + '</div>';
-  } else {
-    refused++;
-    const why = r.reason==="number" ? 'It named "'+esc(r.pin)+'", which no vetted record covers.'
-      : r.reason==="empty" ? 'No question to ground.'
-      : 'Nothing on record matches closely enough to be sure.';
-    html = '<div class="card refuse animate">'
-      + '<span class="pill">Refused</span>'
-      + '<div class="rtitle">Not in the knowledge base.</div>'
-      + '<div class="rbody">"I don\'t have that vetted. I\'ll follow up in writing." It will not guess to fill the silence.</div>'
-      + '<div class="rwhy">'+why+' &nbsp;&middot;&nbsp; in production this routes to a written follow-up</div>'
-      + '</div>';
-  }
+  if(r.kind==="answer"){ answered++; html=cardHTML(r.fact); }
+  else { refused++; html=refuseHTML(r); }
   elResult.innerHTML=html; elResult.hidden=false; elTally.hidden=false;
   document.getElementById("t-asked").textContent=asked;
   document.getElementById("t-ans").textContent=answered;
@@ -453,7 +558,64 @@ document.getElementById("themeBtn").addEventListener("click", function(){
     (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark");
   document.documentElement.setAttribute("data-theme", next);
 });
-document.getElementById("contact").addEventListener("click", function(e){ e.preventDefault(); });
+/* live-call playback: the same answer() engine, run over a scripted transcript.
+   Every card below is computed live, not hardcoded, so it stays honest. */
+const CALL = [
+  {who:"Rep",   text:"Thanks for making the time. What's top of mind on the fraud side?"},
+  {who:"Buyer", text:"We're a regional bank, we run on Fiserv DNA. Do you integrate with it?"},
+  {who:"Buyer", text:"Good. And are you SOC 2 Type II?"},
+  {who:"Buyer", text:"We're mid core-migration. Do you support Temenos T24?"},
+  {who:"Buyer", text:"and what about correlation keystone, that's our credit union core?",
+    note:"The buyer said <b>Corelation Keystone</b>. Live, Whisper often hears <b>&ldquo;correlation.&rdquo;</b> "
+       + "It resolved on the part it heard right &mdash; <b>Keystone</b> &mdash; and gave the correct, safe "
+       + "answer: <b>not supported</b>. It did not confuse a different credit-union core for a yes. "
+       + "A wrong transcript costs a miss, never a confident wrong answer."},
+  {who:"Buyer", text:"Last one. Can you guarantee you'll catch 100% of fraud?"},
+  {who:"Rep",   text:"On the ones it wouldn't answer, I'll put the exact language in writing."},
+];
+
+const elTranscript=document.getElementById("transcript");
+const playBtn=document.getElementById("play");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let playing=false;
+
+function addTurn(t){
+  const div=document.createElement("div");
+  div.className="turn fade "+(t.who==="Buyer"?"buyer":"rep");
+  div.innerHTML='<span class="who">'+t.who+'</span><span class="said">'+esc(t.text)+'</span>';
+  elTranscript.appendChild(div);
+  div.scrollIntoView({block:"nearest", behavior:reduce?"auto":"smooth"});
+}
+function addWhisper(t){
+  const r=answer(t.text);
+  const wrap=document.createElement("div");
+  wrap.className="whisper fade";
+  wrap.innerHTML='<div class="tag">whispered only to the rep</div>'
+    + (r.kind==="answer" ? cardHTML(r.fact) : refuseHTML(r))
+    + (t.note ? '<div class="savenote">'+t.note+'</div>' : "");
+  elTranscript.appendChild(wrap);
+  wrap.scrollIntoView({block:"nearest", behavior:reduce?"auto":"smooth"});
+}
+function playCall(){
+  if(playing) return;
+  playing=true; playBtn.disabled=true; playBtn.textContent="playing…";
+  elTranscript.innerHTML="";
+  let i=0;
+  (function step(){
+    if(i>=CALL.length){
+      playing=false; playBtn.disabled=false; playBtn.innerHTML="↺&nbsp; Replay the call";
+      return;
+    }
+    const t=CALL[i++];
+    addTurn(t);
+    if(t.who==="Buyer"){
+      setTimeout(function(){ addWhisper(t); setTimeout(step, reduce?0:1350); }, reduce?0:760);
+    } else {
+      setTimeout(step, reduce?0:1050);
+    }
+  })();
+}
+playBtn.addEventListener("click", playCall);
 
 render("Do you support Temenos T24?");
 input.value="";
