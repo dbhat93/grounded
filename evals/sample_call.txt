@@ -1,0 +1,14 @@
+Prospect: appreciate you jumping on, we've got about twenty minutes.
+Rep: of course, thanks for the time. tell me about your current setup.
+Prospect: sure, we're a mid-size bank, we run on Fiserv DNA today.
+Rep: got it, that's a common one for us.
+Prospect: honestly the big pain is we've been drowning in fraud false positives.
+Prospect: we're also evaluating SentinelIQ, how do you two compare?
+Rep: good question, let me speak to that directly.
+Prospect: and do you support Temenos T24? we're planning a core migration next year.
+Rep: mm, let me be precise on that.
+Prospect: a colleague mentioned a vendor called FalconX, are you familiar with them?
+Rep: on the compliance side, are you FedRAMP authorized?
+Prospect: and you do real time transaction scoring, right, not batch?
+Rep: let me confirm the exact latency for you.
+Prospect: perfect, this is really helpful. let's talk next steps.

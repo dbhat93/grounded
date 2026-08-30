@@ -1,0 +1,460 @@
+<title>Grounded: watch it refuse to guess</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #F4F6F8; --surface: #FFFFFF; --surface-2: #EDF0F4;
+    --ink: #161B22; --ink-soft: #495260; --muted: #7C8592;
+    --border: #DBE0E7; --border-strong: #C6CDD6;
+    --accent: #23507E; --accent-soft: #E7EEF6;
+    --ga: #167A47; --ga-bg: #E6F2EB;
+    --beta: #8A6614; --beta-bg: #F6EFD9;
+    --roadmap: #A9711A; --roadmap-bg: #F7EFDB;
+    --no: #A4383A; --no-bg: #F6E7E7;
+    --battle: #574A86; --battle-bg: #ECE8F6;
+    --refuse: #2C4761; --refuse-bg: #E7EEF4; --refuse-line: #B9C9D8;
+    --shadow: 0 1px 2px rgba(20,27,34,.05), 0 12px 32px -12px rgba(20,27,34,.14);
+    --serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1217; --surface: #161C24; --surface-2: #1D2530;
+      --ink: #E8ECF2; --ink-soft: #AEB6C1; --muted: #78818E;
+      --border: #262F3B; --border-strong: #333E4C;
+      --accent: #74A9DC; --accent-soft: #172A3D;
+      --ga: #55C088; --ga-bg: #112619;
+      --beta: #D3A648; --beta-bg: #272012;
+      --roadmap: #D8A448; --roadmap-bg: #2A2211;
+      --no: #DB7476; --no-bg: #2A1718;
+      --battle: #A395D6; --battle-bg: #201C2E;
+      --refuse: #8FB1CC; --refuse-bg: #16212C; --refuse-line: #2C3B4B;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1217; --surface: #161C24; --surface-2: #1D2530;
+    --ink: #E8ECF2; --ink-soft: #AEB6C1; --muted: #78818E;
+    --border: #262F3B; --border-strong: #333E4C;
+    --accent: #74A9DC; --accent-soft: #172A3D;
+    --ga: #55C088; --ga-bg: #112619;
+    --beta: #D3A648; --beta-bg: #272012;
+    --roadmap: #D8A448; --roadmap-bg: #2A2211;
+    --no: #DB7476; --no-bg: #2A1718;
+    --battle: #A395D6; --battle-bg: #201C2E;
+    --refuse: #8FB1CC; --refuse-bg: #16212C; --refuse-line: #2C3B4B;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.55);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
+
+  header.top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; padding: 26px 0 0;
+  }
+  .word { font-family: var(--serif); font-size: 22px; letter-spacing: .2px; }
+  .word b { font-weight: 600; }
+  .word .dot { color: var(--accent); }
+  .tagline {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--muted); text-align: right;
+  }
+
+  .hero { padding: 40px 0 8px; }
+  h1 {
+    font-family: var(--serif); font-weight: 600; text-wrap: balance;
+    font-size: clamp(30px, 5.4vw, 46px); line-height: 1.08;
+    letter-spacing: -.01em; margin: 0 0 14px;
+  }
+  h1 .say { color: var(--accent); font-style: italic; }
+  .lede {
+    font-size: 18px; color: var(--ink-soft); max-width: 60ch;
+    text-wrap: pretty; margin: 0;
+  }
+
+  .console {
+    margin: 30px 0 10px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .console-head {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    background: var(--surface-2);
+  }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); display: block; }
+  .ask { padding: 20px 18px 6px; }
+  .field { display: flex; gap: 10px; }
+  input#q {
+    flex: 1; min-width: 0; font-family: var(--sans); font-size: 16px;
+    color: var(--ink); background: var(--surface-2);
+    border: 1.5px solid var(--border-strong); border-radius: 10px;
+    padding: 12px 14px;
+  }
+  input#q:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  input#q::placeholder { color: var(--muted); }
+  button.go {
+    font-family: var(--sans); font-weight: 600; font-size: 15px;
+    color: #fff; background: var(--accent); border: none; border-radius: 10px;
+    padding: 0 20px; cursor: pointer; transition: filter .15s ease;
+  }
+  button.go:hover { filter: brightness(1.08); }
+  button.go:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 18px 20px; }
+  .chips .lbl { width: 100%; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: -2px; }
+  .chip {
+    font-family: var(--sans); font-size: 13px; color: var(--ink-soft);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 12px; cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--ink); }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .result { padding: 0 18px 20px; }
+  .card {
+    border: 1px solid var(--border); border-left-width: 4px; border-radius: 12px;
+    padding: 16px 18px; background: var(--surface);
+  }
+  .card.animate { animation: rise .28s cubic-bezier(.2,.7,.3,1); }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .card.animate { animation: none; } }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    letter-spacing: .05em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 6px;
+  }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .card .topic { font-family: var(--serif); font-size: 17px; margin: 12px 0 8px; color: var(--ink); line-height: 1.3; }
+  .card .answer { font-size: 16px; color: var(--ink); }
+  .card .caution {
+    margin-top: 12px; font-size: 14px; color: var(--ink-soft);
+    border-top: 1px dashed var(--border-strong); padding-top: 10px;
+  }
+  .card .cite {
+    margin-top: 12px; font-family: var(--mono); font-size: 12px;
+    color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 10px;
+  }
+  .stale { color: var(--roadmap); }
+
+  .card[data-status="ga"] { border-left-color: var(--ga); }
+  .card[data-status="ga"] .pill { color: var(--ga); background: var(--ga-bg); }
+  .card[data-status="beta"] { border-left-color: var(--beta); }
+  .card[data-status="beta"] .pill { color: var(--beta); background: var(--beta-bg); }
+  .card[data-status="roadmap"] { border-left-color: var(--roadmap); }
+  .card[data-status="roadmap"] .pill { color: var(--roadmap); background: var(--roadmap-bg); }
+  .card[data-status="no"] { border-left-color: var(--no); }
+  .card[data-status="no"] .pill { color: var(--no); background: var(--no-bg); }
+  .card[data-status="battle"] { border-left-color: var(--battle); }
+  .card[data-status="battle"] .pill { color: var(--battle); background: var(--battle-bg); }
+
+  .card.refuse {
+    border-color: var(--refuse-line); border-left-color: var(--refuse);
+    background: var(--refuse-bg);
+  }
+  .card.refuse .pill { color: var(--refuse); background: transparent; border: 1px solid var(--refuse-line); }
+  .card.refuse .rtitle { font-family: var(--serif); font-size: 20px; color: var(--ink); margin: 12px 0 6px; }
+  .card.refuse .rbody { font-size: 15px; color: var(--ink-soft); }
+  .card.refuse .rwhy { margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  .tally {
+    display: flex; gap: 20px; padding: 12px 20px; margin: 0 18px 20px;
+    border: 1px dashed var(--border-strong); border-radius: 10px;
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+  }
+  .tally b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .why { padding: 44px 0 8px; display: grid; gap: 22px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 620px) { .why { grid-template-columns: 1fr; } }
+  .why h2 {
+    grid-column: 1 / -1; font-family: var(--mono); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+    margin: 0 0 -6px; font-weight: 600;
+  }
+  .why p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+  .why p b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin: 46px 0 40px; padding-top: 20px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px; display: flex; flex-wrap: wrap;
+    gap: 6px 16px; justify-content: space-between; align-items: baseline;
+  }
+  footer .note { max-width: 46ch; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .theme-toggle {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    padding: 4px 8px; cursor: pointer;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--border-strong); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="word"><b>Grounded</b><span class="dot">.</span></div>
+    <div class="tagline">cite the source or say I don't know</div>
+  </header>
+
+  <section class="hero">
+    <h1>An AI that will <span class="say">refuse to guess</span> in front of your buyer.</h1>
+    <p class="lede">Every sales tool is built to say more. In a regulated room, the expensive
+      failure is one confident wrong answer. So try to make this one lie. Ask it something it
+      shouldn't know, or a feature that isn't shipped. Watch what it does instead.</p>
+  </section>
+
+  <div class="console">
+    <div class="console-head">
+      <span class="dots"><i></i><i></i><i></i></span>
+      <span>live demo &nbsp;·&nbsp; sample vendor: Kestrel (fraud &amp; KYC)</span>
+    </div>
+    <div class="ask">
+      <div class="field">
+        <input id="q" autocomplete="off" spellcheck="false"
+          placeholder="Ask a product, integration, or security question">
+        <button class="go" id="go">Ask</button>
+      </div>
+    </div>
+    <div class="chips" id="chips">
+      <span class="lbl">Try to break it</span>
+    </div>
+    <div class="result" id="result" hidden></div>
+    <div class="tally" id="tally" hidden>
+      <span>asked <b id="t-asked">0</b></span>
+      <span>answered with a citation <b id="t-ans">0</b></span>
+      <span>refused rather than guess <b id="t-ref">0</b></span>
+    </div>
+  </div>
+
+  <section class="why">
+    <h2>Why this is the whole thing</h2>
+    <p><b>Never wrong out loud.</b> It answers only from vetted, cited facts, labels what is live
+      versus roadmap, and refuses when it doesn't know. The refusal is the product, not a bug.</p>
+    <p><b>Where a wrong answer is expensive.</b> Banks, insurers, health systems, government. One
+      misstated security posture or "yes we do that" about a roadmap feature isn't a lost deal.
+      It's a compliance event.</p>
+    <p><b>The refusal you just saw is the moat.</b> Anyone can bolt a copilot onto a call. Almost
+      no one builds it so being <i>correct</i> is the point, with a test suite proving it never
+      confidently lies.</p>
+    <p><b>This is a working engine.</b> The grounding logic runs right here in your browser over
+      sample data. No answer is generated. What you read is the vetted record, or nothing.</p>
+  </section>
+
+  <footer>
+    <span class="note">Demo runs on <b>Kestrel</b>, a fictional fraud-detection vendor. All facts
+      are sample data. Originated by Dhiraj Bhat &nbsp;·&nbsp; <a href="#" id="contact">get in touch</a></span>
+    <button class="theme-toggle" id="themeBtn">theme</button>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* the vetted knowledge (sample: fictional "Kestrel") */
+const FACTS = [
+  {id:"INT-01", topic:"Do you integrate with the Fiserv DNA core banking platform?", answer:"Yes. Kestrel has a certified, production integration with Fiserv DNA via the DNA API, live at multiple bank customers today.", status:"ga", src:"integrations", ver:"2026-06-14"},
+  {id:"INT-02", topic:"Do you support Jack Henry Symitar (Episys) for credit unions?", answer:"Yes. Kestrel integrates with Jack Henry Symitar / Episys through the SymXchange API. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
+  {id:"INT-03", topic:"Do you integrate with the FIS Horizon core?", answer:"FIS Horizon support is in Beta with two design-partner banks. Not yet generally available.", status:"beta", src:"integrations", ver:"2026-07-02"},
+  {id:"INT-04", topic:"Do you support Temenos T24 / Transact?", answer:"Temenos T24 (Transact) is on the roadmap, targeted for Q4 2026. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
+  {id:"INT-05", topic:"Do you have a Salesforce integration for case sync?", answer:"Yes. Kestrel offers a native Salesforce managed package that syncs fraud cases bidirectionally. Generally available.", status:"ga", src:"integrations", ver:"2026-05-30"},
+  {id:"INT-06", topic:"Do you support real-time webhooks for fraud alerts?", answer:"Yes. Kestrel pushes alert and decision events via signed real-time webhooks with configurable retry. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
+  {id:"INT-07", topic:"Do you integrate with Plaid for identity verification?", answer:"Yes. Kestrel consumes Plaid Auth and Identity signals as inputs to onboarding risk scoring. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
+  {id:"INT-09", topic:"Can you export data to Snowflake or a data warehouse?", answer:"Yes. Kestrel supports scheduled exports of alerts, decisions and case data to Snowflake, S3 and SFTP. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
+  {id:"SEC-01", topic:"Are you SOC 2 Type II certified?", answer:"Yes. Kestrel maintains a SOC 2 Type II report, audited annually by a third party. Available under NDA.", status:"ga", src:"trust", ver:"2026-04-11"},
+  {id:"SEC-02", topic:"Are you PCI DSS compliant?", answer:"Kestrel is assessed as a PCI DSS Level 1 service provider. Attestation of Compliance available under NDA.", status:"ga", src:"trust", ver:"2026-04-11"},
+  {id:"SEC-03", topic:"Where is customer data hosted?", answer:"Kestrel runs on AWS in US regions (us-east-1, us-west-2). All customer data is stored and processed in the United States.", status:"ga", src:"trust", ver:"2026-05-30"},
+  {id:"SEC-04", topic:"Do you support EU data residency or hosting outside the US?", answer:"EU / non-US data residency is on the roadmap with no committed date. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
+  {id:"SEC-05", topic:"Are you FedRAMP authorized?", answer:"No. Kestrel is not FedRAMP authorized and is not currently pursuing FedRAMP.", status:"no", src:"trust", ver:"2026-05-30"},
+  {id:"SEC-06", topic:"How is data encrypted at rest and in transit?", answer:"Data is encrypted at rest with AES-256 and in transit with TLS 1.2 or higher. Keys managed with AWS KMS.", status:"ga", src:"trust", ver:"2026-04-11"},
+  {id:"SEC-07", topic:"Do you support SSO / SAML and SCIM provisioning?", answer:"SSO via SAML 2.0 and OIDC is generally available. Automated SCIM provisioning is in beta.", status:"ga", src:"trust", ver:"2026-05-30"},
+  {id:"SEC-08", topic:"What is your default data retention policy for PII?", answer:"Retention is configurable per customer. Default retention for case and PII data is 7 years to meet BSA/AML recordkeeping.", status:"ga", src:"trust", ver:"2026-02-09"},
+  {id:"CAP-01", topic:"Do you do real-time transaction fraud scoring, and how fast?", answer:"Yes. Kestrel scores transactions in real time with a p95 latency under 200ms. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
+  {id:"CAP-02", topic:"Do you support device fingerprinting?", answer:"Yes. Device fingerprinting and device reputation are generally available as inputs to the risk model.", status:"ga", src:"product", ver:"2026-06-14"},
+  {id:"CAP-03", topic:"Do you detect check fraud?", answer:"Check fraud detection (deposit and image analysis) is in Beta with a limited set of customers.", status:"beta", src:"product", ver:"2026-07-02"},
+  {id:"CAP-04", topic:"Do you offer consortium or shared cross-institution fraud signals?", answer:"A consortium / shared-signal network is on the roadmap, targeted H1 2027. It does not exist today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
+  {id:"CAP-05", topic:"Do you do AML transaction monitoring?", answer:"Yes. Kestrel provides AML transaction monitoring with configurable typologies and thresholds. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
+  {id:"CAP-06", topic:"Do you automatically file SARs with FinCEN?", answer:"No. Kestrel prepares and pre-populates SAR narratives and surfaces filing candidates, but a human analyst reviews and files.", status:"no", src:"product", ver:"2026-06-14"},
+  {id:"CAP-07", topic:"Do you have case management and investigation workflow?", answer:"Yes. Kestrel includes native case management with queues, assignment, audit trail and disposition. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
+  {id:"CAP-08", topic:"Can analysts author their own custom rules without engineering?", answer:"Yes. Analysts author, test and deploy custom rules in a no-code rules studio with sandbox backtesting. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
+  {id:"COM-01", topic:"What is your uptime SLA?", answer:"The contractual uptime SLA is 99.9% monthly for the Enterprise tier. Generally available.", status:"ga", src:"contract", ver:"2026-05-30"},
+  {id:"COM-02", topic:"What are your support hours?", answer:"Enterprise tier includes 24/7 support with a 1-hour Sev-1 response target. Standard tier is business hours.", status:"ga", src:"support", ver:"2026-05-30"},
+  {id:"COM-03", topic:"How long does implementation take?", answer:"Typical implementation is 8 to 12 weeks depending on core integration and data readiness. A general estimate, not a commitment.", status:"ga", src:"onboarding", ver:"2026-05-30"},
+  {id:"COM-04", topic:"What is your pricing model?", answer:"Kestrel prices as an annual platform fee plus a per-decision usage component. Specifics are deal-specific; the account team quotes.", status:"ga", src:"commercial", ver:"2026-05-30"},
+  {id:"NEG-01", topic:"Fiserv Premier core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Premier core. Premier is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
+  {id:"NEG-02", topic:"Fiserv Signature core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Signature core. Signature is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
+  {id:"NEG-03", topic:"Jack Henry SilverLake core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys), not the SilverLake bank core. SilverLake is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
+  {id:"NEG-04", topic:"Temenos Infinity integration", answer:"Kestrel's Temenos work targets T24 / Transact (roadmap). Temenos Infinity is not supported.", status:"no", src:"integrations", ver:"2026-07-18"},
+  {id:"COMP-01", topic:"SentinelIQ", answer:"SentinelIQ is strong on rules-based AML but has no sub-200ms real-time ML scoring; Kestrel's is GA. Both are SOC 2 Type II. SentinelIQ has no Jack Henry Symitar integration. Verify any competitor claim against their current materials before stating it.", status:"battle", src:"competitive", ver:"2026-07-20"},
+  {id:"COMP-02", topic:"FraudFort", answer:"FraudFort covers device fingerprinting and case management, but routes scoring through a batch pipeline (minutes, not milliseconds); Kestrel scores in real time. Confirm FraudFort's current latency claims before quoting them.", status:"battle", src:"competitive", ver:"2026-07-20"},
+];
+
+const LABEL = { ga:"GA", beta:"Beta", roadmap:"Roadmap", no:"Not supported", battle:"Battle card" };
+const CAUTION = {
+  beta:"Beta, not GA. Do not present as generally available; confirm access.",
+  roadmap:"Roadmap, not shipped. Do not present as available today.",
+  no:"Not supported. Say so plainly; do not imply a workaround exists.",
+  battle:"Competitive intel. Verify against the competitor's current materials before stating it live.",
+};
+
+const STOP = new Set(("a an the this that these those and or but if then else of to in on for with without "+
+ "do does did you your yours we us our ours they them their it its is are was were be been being have has had "+
+ "can could should would will shall may might must about into over under integrate integrates integrated integration "+
+ "integrations offer offers offered provide provides give gives handle handles what which who whom whose where when "+
+ "why how much many any some all there here as at by from i me my mine so than too very just also").split(/\s+/));
+
+function norm(t){ return (t.length>3 && t.endsWith("s") && !t.endsWith("ss")) ? t.slice(0,-1) : t; }
+function tokenize(s){
+  const out=[];
+  for(const m of s.toLowerCase().matchAll(/[a-z0-9]+/g)){
+    let t=m[0];
+    if(STOP.has(t) || (t.length<2 && !/\d/.test(t))) continue;
+    t=norm(t); if(STOP.has(t)) continue;
+    out.push(t);
+  }
+  return out;
+}
+const STRONG = (function(){
+  const lower=new Set(), caps=new Set();
+  for(const f of FACTS){
+    for(const w of (f.topic+" "+f.answer).matchAll(/[A-Za-z0-9][A-Za-z0-9-]*/g)){
+      const raw=w[0], up=/[A-Z]/.test(raw);
+      for(const p of raw.toLowerCase().matchAll(/[a-z0-9]+/g)){
+        let t=p[0]; if(STOP.has(t)||(t.length<2&&!/\d/.test(t))) continue; t=norm(t);
+        (up?caps:lower).add(t);
+      }
+    }
+  }
+  const s=new Set(); for(const t of caps) if(!lower.has(t)) s.add(t);
+  s.delete("yes"); s.delete("no"); return s;
+})();
+
+const DOCS = FACTS.map(function(f){
+  const topicTok=tokenize(f.topic), ansTok=tokenize(f.answer);
+  const tokens=topicTok.concat(topicTok,topicTok,ansTok);
+  const set=new Set(topicTok.concat(ansTok));
+  return {f:f, tokens:tokens, set:set};
+});
+const N=DOCS.length, df={};
+for(const d of DOCS){ for(const t of new Set(d.tokens)) df[t]=(df[t]||0)+1; }
+const idf={}; for(const t in df) idf[t]=Math.log((N+1)/(df[t]+0.5));
+function vec(tokens){
+  const tf={}; for(const t of tokens) tf[t]=(tf[t]||0)+1;
+  const v={}; for(const t in tf) v[t]=(1+Math.log(tf[t]))*(idf[t]||0); return v;
+}
+const DVECS = DOCS.map(function(d){ const v=vec(d.tokens); let n=0; for(const k in v) n+=v[k]*v[k]; return {v:v, norm:Math.sqrt(n)}; });
+
+const THRESHOLD=0.20, MIN_SHARED=2, DISTINCT_IDF=2.5;
+
+function answer(query){
+  const qtok=tokenize(query);
+  if(!qtok.length) return {kind:"refuse", reason:"empty"};
+  const qv=vec(qtok); let qn=0; for(const k in qv) qn+=qv[k]*qv[k]; qn=Math.sqrt(qn);
+  const qset=new Set(qtok);
+  let scored=[];
+  if(qn>0) DOCS.forEach(function(d,i){
+    const dv=DVECS[i]; if(dv.norm===0) return;
+    let dot=0; for(const k in qv) dot += qv[k]*(dv.v[k]||0);
+    if(dot>0) scored.push({d:d, s:dot/(qn*dv.norm)});
+  });
+  scored.sort(function(a,b){ return b.s-a.s; });
+  const eligible = scored.filter(function(o){
+    const shared=[...qset].filter(function(t){ return o.d.set.has(t); });
+    if(shared.length>=MIN_SHARED) return true;
+    if(shared.length===1){
+      const t=shared[0];
+      if(STRONG.has(t)) return true;
+      if(qtok.length===1 && (idf[t]||0)>=DISTINCT_IDF) return true;
+    }
+    return false;
+  });
+  if(!eligible.length || eligible[0].s<THRESHOLD)
+    return {kind:"refuse", reason:"weak"};
+  for(const t of qtok){ if(/^\d+$/.test(t) && !eligible[0].d.set.has(t))
+    return {kind:"refuse", reason:"number", pin:t}; }
+  return {kind:"answer", fact:eligible[0].d.f, score:eligible[0].s};
+}
+
+const elResult=document.getElementById("result");
+const elTally=document.getElementById("tally");
+let asked=0, answered=0, refused=0;
+function daysSince(iso){ const d=new Date(iso+"T00:00:00"); return Math.floor((Date.now()-d)/86400000); }
+function esc(s){ return s.replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+
+function render(query){
+  const r=answer(query);
+  asked++;
+  let html;
+  if(r.kind==="answer"){
+    answered++;
+    const f=r.fact, cap=CAUTION[f.status];
+    const stale=daysSince(f.ver)>90 ? ' &middot; <span class="stale">stale, re-confirm ('+daysSince(f.ver)+'d)</span>' : "";
+    html = '<div class="card animate" data-status="'+f.status+'">'
+      + '<span class="pill">'+LABEL[f.status]+'</span>'
+      + '<div class="topic">'+esc(f.topic)+'</div>'
+      + '<div class="answer">'+esc(f.answer)+'</div>'
+      + (cap?'<div class="caution">'+esc(cap)+'</div>':"")
+      + '<div class="cite"><span>source '+esc(f.src)+'/'+esc(f.id)+'</span><span>verified '+esc(f.ver)+stale+'</span></div>'
+      + '</div>';
+  } else {
+    refused++;
+    const why = r.reason==="number" ? 'It named "'+esc(r.pin)+'", which no vetted record covers.'
+      : r.reason==="empty" ? 'No question to ground.'
+      : 'Nothing on record matches closely enough to be sure.';
+    html = '<div class="card refuse animate">'
+      + '<span class="pill">Refused</span>'
+      + '<div class="rtitle">Not in the knowledge base.</div>'
+      + '<div class="rbody">"I don\'t have that vetted. I\'ll follow up in writing." It will not guess to fill the silence.</div>'
+      + '<div class="rwhy">'+why+' &nbsp;&middot;&nbsp; in production this routes to a written follow-up</div>'
+      + '</div>';
+  }
+  elResult.innerHTML=html; elResult.hidden=false; elTally.hidden=false;
+  document.getElementById("t-asked").textContent=asked;
+  document.getElementById("t-ans").textContent=answered;
+  document.getElementById("t-ref").textContent=refused;
+}
+
+const input=document.getElementById("q");
+function run(){ const q=input.value.trim(); if(q) render(q); }
+document.getElementById("go").addEventListener("click", run);
+input.addEventListener("keydown", function(e){ if(e.key==="Enter") run(); });
+
+const CHIPS = [
+  "Do you integrate with Fiserv DNA?",
+  "Do you support Temenos T24?",
+  "Do you integrate with Fiserv Premier?",
+  "Are you FedRAMP authorized?",
+  "How do you compare to SentinelIQ?",
+  "Are you SOC 3 certified?",
+  "Do you integrate with SAP ERP?",
+  "Can you guarantee 100% fraud detection?",
+];
+const chipWrap=document.getElementById("chips");
+CHIPS.forEach(function(c){
+  const b=document.createElement("button");
+  b.className="chip"; b.type="button"; b.textContent=c;
+  b.addEventListener("click", function(){ input.value=c; render(c); input.focus(); });
+  chipWrap.appendChild(b);
+});
+
+document.getElementById("themeBtn").addEventListener("click", function(){
+  const cur=document.documentElement.getAttribute("data-theme");
+  const next = cur==="dark" ? "light" : cur==="light" ? "dark" :
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark");
+  document.documentElement.setAttribute("data-theme", next);
+});
+document.getElementById("contact").addEventListener("click", function(e){ e.preventDefault(); });
+
+render("Do you support Temenos T24?");
+input.value="";
+</script>

@@ -1,0 +1,15 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+*.whl
+
+# grounded build artifacts (regenerated locally; not source)
+kb/.lancedb/
+kb/*.hash
+kb/.emb_cache.npz
+
+# os
+.DS_Store

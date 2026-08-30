@@ -1,0 +1,22 @@
+Call: Acme Bank <> Kestrel, discovery
+Source: Gong (mock)
+Date: 2026-08-05
+
+[00:12] Rep: thanks for the time. tell me about your environment.
+[00:20] Buyer: we're a regional bank, we run on Fiserv DNA. Do you integrate with Fiserv DNA?
+[00:34] Rep: we do, let me confirm the details.
+[01:02] Buyer: good. and are you SOC 2 Type II certified?
+[01:10] Rep: yes.
+[01:25] Buyer: we're planning a core migration. do you support Temenos T24?
+[01:40] Rep: let me be precise on the timing there.
+[02:05] Buyer: we're also looking at SentinelIQ. how do you compare?
+[02:30] Rep: happy to walk through that.
+[02:55] Buyer: do you integrate with Corelation Keystone? that's our credit union subsidiary's core.
+[03:10] Rep: I'll have to check on Keystone.
+[03:40] Buyer: what would pricing look like for a 500 seat deployment?
+[03:55] Rep: pricing is deal-specific, I'll bring numbers back.
+[04:20] Buyer: do you offer a HIPAA BAA? we have a healthcare lending arm.
+[04:35] Rep: let me follow up on HIPAA.
+[05:00] Buyer: last one, can you do real-time transaction scoring under 100ms?
+[05:15] Rep: I'll confirm the exact latency figure.
+[05:40] Buyer: great, this is helpful.

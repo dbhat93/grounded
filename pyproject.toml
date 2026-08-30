@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "grounded-mcp"
+version = "0.1.0"
+description = "A trust-first grounded answer layer for high-trust sales, as an MCP server. Cite the source or refuse; never confidently wrong."
+readme = "README.md"
+requires-python = ">=3.10"
+# license: all rights reserved (portfolio; not open-source yet)
+authors = [{ name = "Dhiraj Bhat" }]
+keywords = ["mcp", "grounding", "rag", "sales", "trust", "cite-or-refuse"]
+
+# Core install runs the default MCP server (routed + lexical): no model, no
+# egress, stdlib + the MCP SDK only.
+dependencies = ["mcp>=2.0.0"]
+
+[project.optional-dependencies]
+# Semantic retrieval (GROUNDED_MCP_MODE=hybrid) and the verifier.
+hybrid = ["sentence-transformers>=3", "lancedb>=0.4", "numpy>=1.24", "torch>=2"]
+# The ingestion pipeline (document extraction).
+ingest = ["openpyxl>=3", "python-docx>=1", "pypdf>=4"]
+
+[project.scripts]
+grounded-mcp = "grounded.mcp_server:main"
+
+[project.urls]
+Homepage = "https://modelcontextprotocol.io"
+
+[tool.hatch.build.targets.wheel]
+packages = ["grounded"]
+
+# Bundle the vetted fact files into the package so the installed server is
+# self-contained (facts.py prefers grounded/kb when present).
+[tool.hatch.build.targets.wheel.force-include]
+"kb/qa.jsonl" = "grounded/kb/qa.jsonl"
+"kb/capabilities.jsonl" = "grounded/kb/capabilities.jsonl"
+"kb/competitors.jsonl" = "grounded/kb/competitors.jsonl"
+"kb/promoted.jsonl" = "grounded/kb/promoted.jsonl"

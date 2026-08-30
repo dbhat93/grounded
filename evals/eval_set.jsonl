@@ -1,0 +1,118 @@
+{"q": "do you integrate with fiserv dna?", "expect": "QA-INT-01", "note": "GA core, plain"}
+{"q": "is fiserv dna supported?", "expect": "QA-INT-01", "note": "GA core, paraphrase"}
+{"q": "we run on fiserv dna, can you connect to it?", "expect": "QA-INT-01", "note": "GA core, conversational"}
+{"q": "do you work with jack henry symitar?", "expect": "QA-INT-02", "note": "GA, verb variation"}
+{"q": "we are a credit union on episys, are you compatible?", "expect": "QA-INT-02", "note": "GA, product alias episys"}
+{"q": "is there a salesforce integration?", "expect": "QA-INT-05", "note": "GA, single strong token"}
+{"q": "can you sync fraud cases to salesforce?", "expect": "QA-INT-05", "note": "GA, paraphrase"}
+{"q": "do you support real time webhooks for alerts?", "expect": "QA-INT-06", "note": "GA"}
+{"q": "can you push alert events to us via webhook?", "expect": "QA-INT-06", "note": "GA, paraphrase"}
+{"q": "do you use plaid for identity verification?", "expect": "QA-INT-07", "note": "GA"}
+{"q": "do you pull plaid signals during onboarding?", "expect": "QA-INT-07", "note": "GA, paraphrase"}
+{"q": "can you export to snowflake?", "expect": "QA-INT-09", "note": "GA"}
+{"q": "do you support data warehouse export to s3?", "expect": "QA-INT-09", "note": "GA, paraphrase"}
+{"q": "are you soc 2 type 2 certified?", "expect": "QA-SEC-01", "note": "GA, security"}
+{"q": "do you have a soc 2 report we can review?", "expect": "QA-SEC-01", "note": "GA, paraphrase"}
+{"q": "are you pci dss compliant?", "expect": "QA-SEC-02", "note": "GA"}
+{"q": "what pci level are you assessed at?", "expect": "QA-SEC-02", "note": "GA, paraphrase"}
+{"q": "where is our customer data hosted?", "expect": "QA-SEC-03", "note": "GA, US hosting"}
+{"q": "what aws regions do you run in?", "expect": "QA-SEC-03", "note": "GA, paraphrase"}
+{"q": "how do you encrypt data at rest and in transit?", "expect": "QA-SEC-06", "note": "GA"}
+{"q": "what encryption standard do you use at rest?", "expect": "QA-SEC-06", "note": "GA, paraphrase"}
+{"q": "do you support saml single sign on?", "expect": "QA-SEC-07", "note": "GA, single strong token saml"}
+{"q": "do you offer sso for our admins?", "expect": "QA-SEC-07", "note": "GA, single strong token sso"}
+{"q": "what is your default pii retention policy?", "expect": "QA-SEC-08", "note": "GA, stale row should flag"}
+{"q": "how long do you retain case data by default?", "expect": "QA-SEC-08", "note": "GA, paraphrase"}
+{"q": "how fast is real time transaction scoring?", "expect": "QA-CAP-01", "note": "GA, latency"}
+{"q": "what is the latency on your fraud scoring?", "expect": "QA-CAP-01", "note": "GA, paraphrase"}
+{"q": "do you support device fingerprinting?", "expect": "QA-CAP-02", "note": "GA"}
+{"q": "do you do device reputation scoring?", "expect": "QA-CAP-02", "note": "GA, paraphrase"}
+{"q": "do you do aml transaction monitoring?", "expect": "QA-CAP-05", "note": "GA"}
+{"q": "do you monitor transactions against aml typologies?", "expect": "QA-CAP-05", "note": "GA, paraphrase"}
+{"q": "do you have case management?", "expect": "QA-CAP-07", "note": "GA"}
+{"q": "is there an investigation workflow with queues?", "expect": "QA-CAP-07", "note": "GA, paraphrase"}
+{"q": "can analysts author their own rules?", "expect": "QA-CAP-08", "note": "GA"}
+{"q": "is there a no code rules studio with backtesting?", "expect": "QA-CAP-08", "note": "GA, paraphrase"}
+{"q": "do you provide reason codes for adverse action?", "expect": "QA-CAP-09", "note": "GA"}
+{"q": "do you offer model explainability?", "expect": "QA-CAP-09", "note": "GA, paraphrase"}
+{"q": "how often are the fraud models retrained?", "expect": "QA-CAP-10", "note": "GA"}
+{"q": "do you offer a sandbox environment?", "expect": "QA-CAP-11", "note": "GA"}
+{"q": "is there a test environment with synthetic data?", "expect": "QA-CAP-11", "note": "GA, paraphrase"}
+{"q": "what is your uptime sla?", "expect": "QA-COM-01", "note": "GA"}
+{"q": "do you guarantee 99.9% uptime?", "expect": "QA-COM-01", "note": "GA, guarantee is fine in context"}
+{"q": "what are your support hours?", "expect": "QA-COM-02", "note": "GA"}
+{"q": "do you offer 24/7 enterprise support?", "expect": "QA-COM-02", "note": "GA, paraphrase"}
+{"q": "how long does implementation take?", "expect": "QA-COM-03", "note": "GA estimate"}
+{"q": "how many weeks for a typical implementation?", "expect": "QA-COM-03", "note": "GA, paraphrase"}
+{"q": "what is your pricing model?", "expect": "QA-COM-04", "note": "GA, must route to account team"}
+{"q": "how much does it cost per month, ballpark?", "expect": "QA-COM-04", "note": "GA, must not quote a number"}
+{"q": "is there a free trial available?", "expect": "QA-COM-05", "note": "GA"}
+{"q": "is the fis horizon core supported yet?", "expect": "QA-INT-03", "note": "BETA, must surface not-GA"}
+{"q": "can I go live on fis horizon in production today?", "expect": "QA-INT-03", "note": "BETA trap phrased as live"}
+{"q": "is there a mobile sdk?", "expect": "QA-INT-08", "note": "BETA"}
+{"q": "do you have an ios sdk for device signals?", "expect": "QA-INT-08", "note": "BETA, paraphrase"}
+{"q": "do you detect check fraud?", "expect": "QA-CAP-03", "note": "BETA"}
+{"q": "can you catch fraudulent check deposits?", "expect": "QA-CAP-03", "note": "BETA, paraphrase"}
+{"q": "do you support temenos t24?", "expect": "QA-INT-04", "note": "ROADMAP, must not claim live"}
+{"q": "can we deploy on temenos t24 in production now?", "expect": "QA-INT-04", "note": "ROADMAP trap phrased as live"}
+{"q": "you can host our data in the EU today, right?", "expect": "QA-SEC-04", "note": "ROADMAP trap, leading"}
+{"q": "do you offer eu data residency?", "expect": "QA-SEC-04", "note": "ROADMAP"}
+{"q": "do you offer consortium shared fraud signals across banks?", "expect": "QA-CAP-04", "note": "ROADMAP"}
+{"q": "can we tap the shared cross institution fraud network today?", "expect": "QA-CAP-04", "note": "ROADMAP trap"}
+{"q": "do you integrate with finastra?", "expect": "CAP-05", "note": "ROADMAP, capability-only row"}
+{"q": "is the finastra core integration available?", "expect": "CAP-05", "note": "ROADMAP"}
+{"q": "do you export logs to splunk?", "expect": "CAP-08", "note": "GA, capability-only row"}
+{"q": "do you support siem log export?", "expect": "CAP-08", "note": "GA, capability-only"}
+{"q": "do you support batch file ingest?", "expect": "CAP-10", "note": "GA, capability-only"}
+{"q": "can you ingest transaction files in batch?", "expect": "CAP-10", "note": "GA, capability-only"}
+{"q": "are you fedramp authorized?", "expect": "QA-SEC-05", "note": "honest NO"}
+{"q": "do you carry any fedramp status at all?", "expect": "QA-SEC-05", "note": "honest NO, paraphrase"}
+{"q": "will you file the SARs automatically for us?", "expect": "QA-CAP-06", "note": "NOT SUPPORTED honest no"}
+{"q": "do you automatically file SARs with fincen?", "expect": "QA-CAP-06", "note": "NOT SUPPORTED"}
+{"q": "do you monitor crypto transactions?", "expect": "CAP-14", "note": "NOT SUPPORTED, capability-only"}
+{"q": "can you screen virtual asset crypto transactions?", "expect": "CAP-14", "note": "NOT SUPPORTED"}
+{"q": "you don't support crypto monitoring, correct?", "expect": "CAP-14", "note": "negation, still returns not-supported row"}
+{"q": "just to confirm, you are soc 2 type ii, yes?", "expect": "QA-SEC-01", "note": "leading-confirm, true GA"}
+{"q": "am I right that fedramp is not available?", "expect": "QA-SEC-05", "note": "negation, true not-supported"}
+{"q": "do you integrate with fiserv premier?", "expect": "CAP-18", "note": "near-miss brand variant, curated not-supported row"}
+{"q": "do you support the fiserv signature core?", "expect": "CAP-19", "note": "near-miss brand variant, curated not-supported"}
+{"q": "do you integrate with jack henry silverlake?", "expect": "CAP-20", "note": "near-miss, curated not-supported (Symitar vetted)"}
+{"q": "do you support temenos infinity?", "expect": "CAP-21", "note": "near-miss, curated not-supported (T24 vetted)"}
+{"q": "is fis profile supported?", "expect": "CAP-22", "note": "near-miss, curated not-supported (Horizon vetted)"}
+{"q": "do you integrate with corelation keystone?", "expect": "CAP-23", "note": "curated not-supported (Corelation Keystone is a different CU core)"}
+{"q": "do you connect to zelle?", "expect": "REFUSE", "note": "off-domain rail, no row"}
+{"q": "do you integrate with sardine?", "expect": "REFUSE", "note": "competitor, no row"}
+{"q": "do you integrate with SAP ERP?", "expect": "REFUSE", "note": "off-domain system"}
+{"q": "do you integrate with microsoft dynamics crm?", "expect": "REFUSE", "note": "off-domain crm"}
+{"q": "do you integrate with oracle netsuite?", "expect": "REFUSE", "note": "off-domain erp"}
+{"q": "are you hipaa compliant?", "expect": "REFUSE", "note": "no HIPAA row"}
+{"q": "are you iso 27001 certified?", "expect": "REFUSE", "note": "no ISO row, number variant"}
+{"q": "are you gdpr compliant?", "expect": "REFUSE", "note": "no GDPR row"}
+{"q": "do you have a soc 1 report?", "expect": "REFUSE", "note": "number variant, only SOC 2 vetted"}
+{"q": "do you offer life insurance underwriting?", "expect": "REFUSE", "note": "wrong product/vertical"}
+{"q": "can you process medical claims?", "expect": "REFUSE", "note": "wrong vertical"}
+{"q": "what is your carbon footprint and ESG policy?", "expect": "REFUSE", "note": "no vetted row, incidental word trap"}
+{"q": "who is your CEO?", "expect": "REFUSE", "note": "company trivia"}
+{"q": "how many employees do you have?", "expect": "REFUSE", "note": "company trivia"}
+{"q": "what was your company revenue last year?", "expect": "REFUSE", "note": "company trivia"}
+{"q": "are you hiring engineers right now?", "expect": "REFUSE", "note": "off-domain"}
+{"q": "what programming language is the product written in?", "expect": "REFUSE", "note": "off-domain internal"}
+{"q": "do you have an office in london?", "expect": "REFUSE", "note": "off-domain"}
+{"q": "what is your stock ticker?", "expect": "REFUSE", "note": "off-domain"}
+{"q": "can you help me write a poem for the demo?", "expect": "REFUSE", "note": "off-task"}
+{"q": "can you guarantee we will catch 100 percent of fraud?", "expect": "REFUSE", "note": "leading absolute claim, unvettable"}
+{"q": "will we have zero false positives?", "expect": "REFUSE", "note": "leading absolute claim"}
+{"q": "can you promise full regulatory compliance out of the box?", "expect": "REFUSE", "note": "leading absolute claim"}
+{"q": "do you eliminate all chargebacks entirely?", "expect": "REFUSE", "note": "leading absolute claim"}
+{"q": "what are your operating hours?", "expect": "QA-COM-02", "note": "synonym: operating vs support"}
+{"q": "how does encryption at rest actually work?", "expect": "QA-SEC-06", "note": "word-form: encryption vs encrypted"}
+{"q": "roughly what will this run us each month?", "expect": "QA-COM-04", "note": "synonym: run vs cost"}
+{"q": "do you plug into snowflake?", "expect": "QA-INT-09", "note": "synonym: plug into vs export/integrate"}
+{"q": "how quickly do you flag a risky transaction?", "expect": "QA-CAP-01", "note": "synonym: quickly/flag vs latency/scoring"}
+{"q": "can your platform spot money laundering patterns?", "expect": "QA-CAP-05", "note": "synonym: spot money laundering vs AML monitoring"}
+{"q": "do your fraud models get refreshed on a regular cadence?", "expect": "QA-CAP-10", "note": "synonym: refreshed vs retrained"}
+{"q": "is there a safe place to try configurations before going live?", "expect": "QA-CAP-11", "note": "synonym: safe place to try vs sandbox"}
+{"q": "how long until we are up and running?", "expect": "QA-COM-03", "note": "synonym: up and running vs implementation"}
+{"q": "are you independently audited for security?", "expect": "QA-SEC-01", "note": "synonym: independently audited vs SOC 2"}
+{"q": "do you hang onto our records for a number of years?", "expect": "QA-SEC-08", "note": "synonym: hang onto records vs retention"}
+{"q": "can analysts build detection logic without engineering help?", "expect": "QA-CAP-08", "note": "synonym: build detection logic vs author rules"}
