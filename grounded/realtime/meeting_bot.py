@@ -1,20 +1,24 @@
 """Minimum-testable meeting bot: drive a live (or simulated) meeting transcript
 through the grounded engine and whisper cite-or-refuse cards to the rep.
 
-The only new piece over the `watch` mode is the transcript SOURCE. Two are
-provided: a local file / stdin source that is testable right now with no
-account, and a Recall.ai real-time transcript handler you wire to a public
-endpoint with your key for a live Zoom / Meet / Teams call. The grounding, the
-entity trigger, and the refusal all reuse the engine unchanged, so the bot
-inherits "never wrong out loud" for free.
+The only new piece over the `watch` mode is the transcript SOURCE. Three are
+provided, all reusing the grounding / entity-trigger / refusal engine unchanged
+so the bot inherits "never wrong out loud" for free:
+
+  1. local file / stdin  - simulated transcript, testable now with no account.
+  2. live local earpiece - capture the real call's audio ON THIS MAC, transcribe
+     with local Whisper, whisper cards to the rep. Nothing leaves the machine.
+     See live_listen.py; run `python -m grounded meeting-bot --live`.
+  3. Recall.ai handler   - a cloud bot joins the call and POSTs transcript events
+     to your webhook (egress). See recall_transcript_event() below.
 
 Test now (simulated meeting):
     python -m grounded meeting-bot evals/sample_call.txt
     tail -f transcript.txt | python -m grounded meeting-bot -
 
-Live: create a Recall.ai bot with the meeting URL and real-time transcription,
-point its webhook at a small server that calls recall_transcript_event(). See
-that function below.
+Real Google Meet / Zoom (local, private, no cloud):
+    python -m grounded meeting-bot --list-devices
+    python -m grounded meeting-bot --live
 """
 import re
 import sys
@@ -66,7 +70,7 @@ class MeetingBot:
         return {"refused": False, "item": it, "line": text}
 
 
-def whisper(res):
+def whisper_card(res):
     line = res["line"].strip()
     print('  heard: "%s"' % line[:76])
     if res["refused"]:
@@ -90,19 +94,45 @@ def _turns(lines):
 def run_meeting_bot(lines, mode="lexical"):
     bot = MeetingBot(mode)
     print("Grounded meeting bot. Whispers a grounded card on buyer turns; silent "
-          "otherwise. (Simulated transcript; wire Recall.ai for a live call.)\n")
+          "otherwise. (Simulated transcript; run --live for a real call.)\n")
     for speaker, text in _turns(lines):
         r = bot.hear(speaker, text)
         if r:
-            whisper(r)
+            whisper_card(r)
     return 0
 
 
 def run_meeting_bot_cli(args):
-    if args and args[0] != "-":
-        with open(args[0], encoding="utf-8") as fh:
+    args = list(args)
+
+    if "--list-devices" in args:
+        from .live_listen import list_devices
+        return list_devices()
+
+    if "--live" in args:
+        from .live_listen import run_live
+        use_mic = "--mic" in args
+        device = _opt(args, "--device")
+        model = _opt(args, "--model") or "base.en"
+        thr = _opt(args, "--threshold")
+        return run_live(device_arg=device, model_name=model, use_mic=use_mic,
+                        threshold=float(thr) if thr else 0.01)
+
+    # file / stdin (simulated transcript), unchanged
+    positional = [a for a in args if not a.startswith("-")]
+    if positional and positional[0] != "-":
+        with open(positional[0], encoding="utf-8") as fh:
             return run_meeting_bot(fh.readlines())
     return run_meeting_bot(sys.stdin)
+
+
+def _opt(args, flag):
+    """Value after `flag` in argv, or None."""
+    if flag in args:
+        i = args.index(flag)
+        if i + 1 < len(args):
+            return args[i + 1]
+    return None
 
 
 def recall_transcript_event(event, bot):
@@ -120,4 +150,4 @@ def recall_transcript_event(event, bot):
     speaker = (data.get("participant") or {}).get("name") or "Buyer"
     r = bot.hear(speaker, text)
     if r:
-        whisper(r)
+        whisper_card(r)

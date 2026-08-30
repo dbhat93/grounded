@@ -141,6 +141,32 @@ On the sample call it surfaces a GA card when the prospect names "Fiserv DNA", a
 
 The design is a borrowed pattern with the discipline inverted. A live copilot that fires retrieval on keywords is common; the trick here is that the trigger only *starts* the lookup, and the same cite-or-refuse engine decides whether anything is safe to show. Trigger on entities, not on question-detection (which is slow and error-prone); ground every surfaced card. The trigger is deliberately high-precision (named entities only), so a capability asked in plain words ("do you do real-time scoring") does not fire; widening the trigger vocabulary is a knob, traded against noise on a live call.
 
+## Live call earpiece (real Meet / Zoom, local and private)
+
+`--watch` proves the form factor over a transcript. The **meeting bot** takes it
+to a real call. It reuses the same engine, so it inherits cite-or-refuse; the only
+new part is where the words come from.
+
+```bash
+python -m grounded meeting-bot fixtures/transcript_gong_acme_bank.txt  # replay a call
+python -m grounded meeting-bot --list-devices                          # find the audio tap
+python -m grounded meeting-bot --live                                  # real call, local
+```
+
+`--live` captures the call's audio on your own Mac, transcribes it with a **local
+Whisper model**, and whispers a grounded card to you when the buyer asks something
+vetted (a refusal on a clear question it cannot vet, silence otherwise). Nothing
+leaves the machine: no cloud transcription, no bot in the meeting. Speaker
+attribution is free, because the call's output audio is only the other side (your
+own mic is never echoed back to you), so every captured utterance is a buyer turn.
+
+It holds "never wrong out loud" through a **noisy transcript**: when Whisper heard
+"correlation keystone" for "Corelation Keystone", the curated negative fact still
+returned NOT SUPPORTED instead of the wrong core. A bad transcript can cause a
+miss (silence); it does not cause a confident wrong answer. Setup (BlackHole +
+Multi-Output Device) and the design are in [grounded/realtime/README.md](grounded/realtime/README.md).
+A Recall.ai cloud-bot seam is included for teams that want a joined bot instead.
+
 ## Knowledge / ingestion layer
 
 ```bash
@@ -182,7 +208,9 @@ grounded/                  the package
   retrieval/hybrid.py      the lexical + dense ensemble (default)
   retrieval/rerank.py      experimental cross-encoder stage
   ingestion/               connectors, extract, factify, freshness, conflict, pipeline
-  cli.py                   modes (one-shot, REPL, watch, eval, ingest, promote) + entry
+  realtime/                the live call earpiece (meeting bot + local Whisper)
+  cli.py                   modes (one-shot, REPL, watch, eval, ingest, promote,
+                           meeting-bot, mcp, verify) + entry
 kb/*.jsonl                 vetted facts (fictional Kestrel): qa, capabilities, competitors
 kb/promoted.jsonl          facts promoted from ingestion (provenance-carrying)
 fixtures/                  mock docs + transcript for ingestion
@@ -192,7 +220,7 @@ evals/sample_call.txt      a sample transcript for --watch
 
 ## Not yet built (see ARCHITECTURE for the full plan)
 
-- Cross-encoder reranker on top of hybrid retrieval.
-- Knowledge/ingestion layer: provenance, freshness TTLs, source-of-truth conflict detection.
-- Constrained LLM composition + claim verification (verbatim stays the default).
-- Real-time transcript service; multi-tenant, audit, own SOC 2.
+- Constrained LLM composition on top of the verifier (verbatim stays the default until the gate is trusted for generation).
+- Real enterprise auth for the cloud connectors (mocked today); pgvector production store.
+- Entity-aware dedup on the promotion path (curation layer).
+- Multi-tenant, audit trail, own SOC 2.
