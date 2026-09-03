@@ -156,6 +156,8 @@
   .card[data-status="roadmap"] .pill { color: var(--roadmap); background: var(--roadmap-bg); }
   .card[data-status="no"] { border-left-color: var(--no); }
   .card[data-status="no"] .pill { color: var(--no); background: var(--no-bg); }
+  .card[data-status="unsupported"] { border-left-color: var(--no); }
+  .card[data-status="unsupported"] .pill { color: var(--no); background: var(--no-bg); }
   .card[data-status="battle"] { border-left-color: var(--battle); }
   .card[data-status="battle"] .pill { color: var(--battle); background: var(--battle-bg); }
 
@@ -345,48 +347,49 @@
 
 /* the vetted knowledge (sample: fictional "Kestrel") */
 const FACTS = [
-  {id:"INT-01", topic:"Do you integrate with the Fiserv DNA core banking platform?", answer:"Yes. Kestrel has a certified, production integration with Fiserv DNA via the DNA API, live at multiple bank customers today.", status:"ga", src:"integrations", ver:"2026-06-14"},
-  {id:"INT-02", topic:"Do you support Jack Henry Symitar (Episys) for credit unions?", answer:"Yes. Kestrel integrates with Jack Henry Symitar / Episys through the SymXchange API. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
-  {id:"INT-03", topic:"Do you integrate with the FIS Horizon core?", answer:"FIS Horizon support is in Beta with two design-partner banks. Not yet generally available.", status:"beta", src:"integrations", ver:"2026-07-02"},
-  {id:"INT-04", topic:"Do you support Temenos T24 / Transact?", answer:"Temenos T24 (Transact) is on the roadmap, targeted for Q4 2026. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
-  {id:"INT-05", topic:"Do you have a Salesforce integration for case sync?", answer:"Yes. Kestrel offers a native Salesforce managed package that syncs fraud cases bidirectionally. Generally available.", status:"ga", src:"integrations", ver:"2026-05-30"},
-  {id:"INT-06", topic:"Do you support real-time webhooks for fraud alerts?", answer:"Yes. Kestrel pushes alert and decision events via signed real-time webhooks with configurable retry. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
-  {id:"INT-07", topic:"Do you integrate with Plaid for identity verification?", answer:"Yes. Kestrel consumes Plaid Auth and Identity signals as inputs to onboarding risk scoring. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
-  {id:"INT-09", topic:"Can you export data to Snowflake or a data warehouse?", answer:"Yes. Kestrel supports scheduled exports of alerts, decisions and case data to Snowflake, S3 and SFTP. Generally available.", status:"ga", src:"integrations", ver:"2026-06-14"},
-  {id:"SEC-01", topic:"Are you SOC 2 Type II certified?", answer:"Yes. Kestrel maintains a SOC 2 Type II report, audited annually by a third party. Available under NDA.", status:"ga", src:"trust", ver:"2026-04-11"},
-  {id:"SEC-02", topic:"Are you PCI DSS compliant?", answer:"Kestrel is assessed as a PCI DSS Level 1 service provider. Attestation of Compliance available under NDA.", status:"ga", src:"trust", ver:"2026-04-11"},
-  {id:"SEC-03", topic:"Where is customer data hosted?", answer:"Kestrel runs on AWS in US regions (us-east-1, us-west-2). All customer data is stored and processed in the United States.", status:"ga", src:"trust", ver:"2026-05-30"},
-  {id:"SEC-04", topic:"Do you support EU data residency or hosting outside the US?", answer:"EU / non-US data residency is on the roadmap with no committed date. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
-  {id:"SEC-05", topic:"Are you FedRAMP authorized?", answer:"No. Kestrel is not FedRAMP authorized and is not currently pursuing FedRAMP.", status:"no", src:"trust", ver:"2026-05-30"},
-  {id:"SEC-06", topic:"How is data encrypted at rest and in transit?", answer:"Data is encrypted at rest with AES-256 and in transit with TLS 1.2 or higher. Keys managed with AWS KMS.", status:"ga", src:"trust", ver:"2026-04-11"},
-  {id:"SEC-07", topic:"Do you support SSO / SAML and SCIM provisioning?", answer:"SSO via SAML 2.0 and OIDC is generally available. Automated SCIM provisioning is in beta.", status:"ga", src:"trust", ver:"2026-05-30"},
-  {id:"SEC-08", topic:"What is your default data retention policy for PII?", answer:"Retention is configurable per customer. Default retention for case and PII data is 7 years to meet BSA/AML recordkeeping.", status:"ga", src:"trust", ver:"2026-02-09"},
-  {id:"CAP-01", topic:"Do you do real-time transaction fraud scoring, and how fast?", answer:"Yes. Kestrel scores transactions in real time with a p95 latency under 200ms. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
-  {id:"CAP-02", topic:"Do you support device fingerprinting?", answer:"Yes. Device fingerprinting and device reputation are generally available as inputs to the risk model.", status:"ga", src:"product", ver:"2026-06-14"},
-  {id:"CAP-03", topic:"Do you detect check fraud?", answer:"Check fraud detection (deposit and image analysis) is in Beta with a limited set of customers.", status:"beta", src:"product", ver:"2026-07-02"},
-  {id:"CAP-04", topic:"Do you offer consortium or shared cross-institution fraud signals?", answer:"A consortium / shared-signal network is on the roadmap, targeted H1 2027. It does not exist today.", status:"roadmap", src:"roadmap", ver:"2026-07-18"},
-  {id:"CAP-05", topic:"Do you do AML transaction monitoring?", answer:"Yes. Kestrel provides AML transaction monitoring with configurable typologies and thresholds. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
-  {id:"CAP-06", topic:"Do you automatically file SARs with FinCEN?", answer:"No. Kestrel prepares and pre-populates SAR narratives and surfaces filing candidates, but a human analyst reviews and files.", status:"no", src:"product", ver:"2026-06-14"},
-  {id:"CAP-07", topic:"Do you have case management and investigation workflow?", answer:"Yes. Kestrel includes native case management with queues, assignment, audit trail and disposition. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
-  {id:"CAP-08", topic:"Can analysts author their own custom rules without engineering?", answer:"Yes. Analysts author, test and deploy custom rules in a no-code rules studio with sandbox backtesting. Generally available.", status:"ga", src:"product", ver:"2026-06-14"},
-  {id:"COM-01", topic:"What is your uptime SLA?", answer:"The contractual uptime SLA is 99.9% monthly for the Enterprise tier. Generally available.", status:"ga", src:"contract", ver:"2026-05-30"},
-  {id:"COM-02", topic:"What are your support hours?", answer:"Enterprise tier includes 24/7 support with a 1-hour Sev-1 response target. Standard tier is business hours.", status:"ga", src:"support", ver:"2026-05-30"},
-  {id:"COM-03", topic:"How long does implementation take?", answer:"Typical implementation is 8 to 12 weeks depending on core integration and data readiness. A general estimate, not a commitment.", status:"ga", src:"onboarding", ver:"2026-05-30"},
-  {id:"COM-04", topic:"What is your pricing model?", answer:"Kestrel prices as an annual platform fee plus a per-decision usage component. Specifics are deal-specific; the account team quotes.", status:"ga", src:"commercial", ver:"2026-05-30"},
-  {id:"NEG-01", topic:"Fiserv Premier core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Premier core. Premier is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
-  {id:"NEG-02", topic:"Fiserv Signature core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Signature core. Signature is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
-  {id:"NEG-03", topic:"Jack Henry SilverLake core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys), not the SilverLake bank core. SilverLake is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
-  {id:"NEG-04", topic:"Temenos Infinity integration", answer:"Kestrel's Temenos work targets T24 / Transact (roadmap). Temenos Infinity is not supported.", status:"no", src:"integrations", ver:"2026-07-18"},
-  {id:"NEG-05", topic:"Corelation Keystone core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys) and Fiserv DNA, not the Corelation Keystone core. Keystone is not supported.", status:"no", src:"integrations", ver:"2026-06-14"},
-  {id:"COMP-01", topic:"SentinelIQ", answer:"SentinelIQ is strong on rules-based AML but has no sub-200ms real-time ML scoring; Kestrel's is GA. Both are SOC 2 Type II. SentinelIQ has no Jack Henry Symitar integration. Verify any competitor claim against their current materials before stating it.", status:"battle", src:"competitive", ver:"2026-07-20"},
-  {id:"COMP-02", topic:"FraudFort", answer:"FraudFort covers device fingerprinting and case management, but routes scoring through a batch pipeline (minutes, not milliseconds); Kestrel scores in real time. Confirm FraudFort's current latency claims before quoting them.", status:"battle", src:"competitive", ver:"2026-07-20"},
+  {id:"INT-01", topic:"Do you integrate with the Fiserv DNA core banking platform?", answer:"Yes. Kestrel has a certified, production integration with Fiserv DNA via the DNA API, live at multiple bank customers today.", status:"ga", src:"integrations", ver:"2026-08-21"},
+  {id:"INT-02", topic:"Do you support Jack Henry Symitar (Episys) for credit unions?", answer:"Yes. Kestrel integrates with Jack Henry Symitar / Episys through the SymXchange API. Generally available.", status:"ga", src:"integrations", ver:"2026-08-21"},
+  {id:"INT-03", topic:"Do you integrate with the FIS Horizon core?", answer:"FIS Horizon support is in Beta with two design-partner banks. Not yet generally available.", status:"beta", src:"integrations", ver:"2026-08-07"},
+  {id:"INT-04", topic:"Do you support Temenos T24 / Transact?", answer:"Temenos T24 (Transact) is on the roadmap, targeted for Q4 2026. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-08-25"},
+  {id:"INT-05", topic:"Do you have a Salesforce integration for case sync?", answer:"Yes. Kestrel offers a native Salesforce managed package that syncs fraud cases bidirectionally. Generally available.", status:"ga", src:"integrations", ver:"2026-08-18"},
+  {id:"INT-06", topic:"Do you support real-time webhooks for fraud alerts?", answer:"Yes. Kestrel pushes alert and decision events via signed real-time webhooks with configurable retry. Generally available.", status:"ga", src:"integrations", ver:"2026-08-21"},
+  {id:"INT-07", topic:"Do you integrate with Plaid for identity verification?", answer:"Yes. Kestrel consumes Plaid Auth and Identity signals as inputs to onboarding risk scoring. Generally available.", status:"ga", src:"integrations", ver:"2026-08-21"},
+  {id:"INT-09", topic:"Can you export data to Snowflake or a data warehouse?", answer:"Yes. Kestrel supports scheduled exports of alerts, decisions and case data to Snowflake, S3 and SFTP. Generally available.", status:"ga", src:"integrations", ver:"2026-08-21"},
+  {id:"SEC-01", topic:"Are you SOC 2 Type II certified?", answer:"Yes. Kestrel maintains a SOC 2 Type II report, audited annually by a third party. Available under NDA.", status:"ga", src:"trust", ver:"2026-08-11"},
+  {id:"SEC-02", topic:"Are you PCI DSS compliant?", answer:"Kestrel is assessed as a PCI DSS Level 1 service provider. Attestation of Compliance available under NDA.", status:"ga", src:"trust", ver:"2026-08-11"},
+  {id:"SEC-03", topic:"Where is customer data hosted?", answer:"Kestrel runs on AWS in US regions (us-east-1, us-west-2). All customer data is stored and processed in the United States.", status:"ga", src:"trust", ver:"2026-08-18"},
+  {id:"SEC-04", topic:"Do you support EU data residency or hosting outside the US?", answer:"EU / non-US data residency is on the roadmap with no committed date. It is not available today.", status:"roadmap", src:"roadmap", ver:"2026-08-25"},
+  {id:"SEC-05", topic:"Are you FedRAMP authorized?", answer:"No. Kestrel is not FedRAMP authorized and is not currently pursuing FedRAMP.", status:"no", src:"trust", ver:"2026-08-18"},
+  {id:"SEC-06", topic:"How is data encrypted at rest and in transit?", answer:"Data is encrypted at rest with AES-256 and in transit with TLS 1.2 or higher. Keys managed with AWS KMS.", status:"ga", src:"trust", ver:"2026-08-11"},
+  {id:"SEC-07", topic:"Do you support SSO / SAML and SCIM provisioning?", answer:"SSO via SAML 2.0 and OIDC is generally available. Automated SCIM provisioning is in beta.", status:"ga", src:"trust", ver:"2026-08-18"},
+  {id:"SEC-08", topic:"What is your default data retention policy for PII?", answer:"Retention is configurable per customer. Default retention for case and PII data is 7 years to meet BSA/AML recordkeeping.", status:"ga", src:"trust", ver:"2026-08-04"},
+  {id:"CAP-01", topic:"Do you do real-time transaction fraud scoring, and how fast?", answer:"Yes. Kestrel scores transactions in real time with a p95 latency under 200ms. Generally available.", status:"ga", src:"product", ver:"2026-08-21"},
+  {id:"CAP-02", topic:"Do you support device fingerprinting?", answer:"Yes. Device fingerprinting and device reputation are generally available as inputs to the risk model.", status:"ga", src:"product", ver:"2026-08-21"},
+  {id:"CAP-03", topic:"Do you detect check fraud?", answer:"Check fraud detection (deposit and image analysis) is in Beta with a limited set of customers.", status:"beta", src:"product", ver:"2026-08-07"},
+  {id:"CAP-04", topic:"Do you offer consortium or shared cross-institution fraud signals?", answer:"A consortium / shared-signal network is on the roadmap, targeted H1 2027. It does not exist today.", status:"roadmap", src:"roadmap", ver:"2026-08-25"},
+  {id:"CAP-05", topic:"Do you do AML transaction monitoring?", answer:"Yes. Kestrel provides AML transaction monitoring with configurable typologies and thresholds. Generally available.", status:"ga", src:"product", ver:"2026-08-21"},
+  {id:"CAP-06", topic:"Do you automatically file SARs with FinCEN?", answer:"No. Kestrel prepares and pre-populates SAR narratives and surfaces filing candidates, but a human analyst reviews and files.", status:"no", src:"product", ver:"2026-08-21"},
+  {id:"CAP-07", topic:"Do you have case management and investigation workflow?", answer:"Yes. Kestrel includes native case management with queues, assignment, audit trail and disposition. Generally available.", status:"ga", src:"product", ver:"2026-08-21"},
+  {id:"CAP-08", topic:"Can analysts author their own custom rules without engineering?", answer:"Yes. Analysts author, test and deploy custom rules in a no-code rules studio with sandbox backtesting. Generally available.", status:"ga", src:"product", ver:"2026-08-21"},
+  {id:"COM-01", topic:"What is your uptime SLA?", answer:"The contractual uptime SLA is 99.9% monthly for the Enterprise tier. Generally available.", status:"ga", src:"contract", ver:"2026-08-18"},
+  {id:"COM-02", topic:"What are your support hours?", answer:"Enterprise tier includes 24/7 support with a 1-hour Sev-1 response target. Standard tier is business hours.", status:"ga", src:"support", ver:"2026-08-18"},
+  {id:"COM-03", topic:"How long does implementation take?", answer:"Typical implementation is 8 to 12 weeks depending on core integration and data readiness. A general estimate, not a commitment.", status:"ga", src:"onboarding", ver:"2026-08-18"},
+  {id:"COM-04", topic:"What is your pricing model?", answer:"Kestrel prices as an annual platform fee plus a per-decision usage component. Specifics are deal-specific; the account team quotes.", status:"ga", src:"commercial", ver:"2026-08-18"},
+  {id:"NEG-01", topic:"Fiserv Premier core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Premier core. Premier is not supported.", status:"unsupported", src:"integrations", ver:"2026-08-21"},
+  {id:"NEG-02", topic:"Fiserv Signature core integration", answer:"Kestrel integrates with Fiserv DNA, not the Fiserv Signature core. Signature is not supported.", status:"unsupported", src:"integrations", ver:"2026-08-21"},
+  {id:"NEG-03", topic:"Jack Henry SilverLake core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys), not the SilverLake bank core. SilverLake is not supported.", status:"unsupported", src:"integrations", ver:"2026-08-21"},
+  {id:"NEG-04", topic:"Temenos Infinity integration", answer:"Kestrel's Temenos work targets T24 / Transact (roadmap). Temenos Infinity is not supported.", status:"unsupported", src:"integrations", ver:"2026-08-25"},
+  {id:"NEG-05", topic:"Corelation Keystone core integration", answer:"Kestrel integrates with Jack Henry Symitar (Episys) and Fiserv DNA, not the Corelation Keystone core. Keystone is not supported.", status:"unsupported", src:"integrations", ver:"2026-08-21"},
+  {id:"COMP-01", topic:"SentinelIQ", answer:"SentinelIQ is strong on rules-based AML but has no sub-200ms real-time ML scoring; Kestrel's is GA. Both are SOC 2 Type II. SentinelIQ has no Jack Henry Symitar integration. Verify any competitor claim against their current materials before stating it.", status:"battle", src:"competitive", ver:"2026-08-26"},
+  {id:"COMP-02", topic:"FraudFort", answer:"FraudFort covers device fingerprinting and case management, but routes scoring through a batch pipeline (minutes, not milliseconds); Kestrel scores in real time. Confirm FraudFort's current latency claims before quoting them.", status:"battle", src:"competitive", ver:"2026-08-26"},
 ];
 
-const LABEL = { ga:"GA", beta:"Beta", roadmap:"Roadmap", no:"Not supported", battle:"Battle card" };
+const LABEL = { ga:"GA", beta:"Beta", roadmap:"Roadmap", no:"No", unsupported:"Not supported", battle:"Battle card" };
 const CAUTION = {
   beta:"Beta, not GA. Do not present as generally available; confirm access.",
   roadmap:"Roadmap, not shipped. Do not present as available today.",
-  no:"Not supported. Say so plainly; do not imply a workaround exists.",
+  no:"A firm no. State it plainly; do not soften it or imply it is coming.",
+  unsupported:"Not supported. Say so plainly; do not imply a workaround exists.",
   battle:"Competitive intel. Verify against the competitor's current materials before stating it live.",
 };
 
